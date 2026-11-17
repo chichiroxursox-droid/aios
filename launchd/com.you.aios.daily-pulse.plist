@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Daily 8:00am. Copy to ~/Library/LaunchAgents/, replace YOU with your macOS username
+  (plists do not expand ~ or $HOME), then:
+    launchctl load ~/Library/LaunchAgents/com.you.aios.daily-pulse.plist
+  Force a run now:  launchctl start com.you.aios.daily-pulse
+  After editing:    launchctl unload ... && launchctl load ...   (there is no reload verb)
+  ai-news uses the same shape at Hour 7 with run-ai-news.sh.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.you.aios.daily-pulse</string>
+
+    <!-- One array element per argument: paths with spaces need no shell quoting. -->
+    <!-- The script is a copy outside ~/Desktop: TCC blocks launchd from running scripts there. -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/YOU/.local/bin/aios/run-daily-pulse.sh</string>
+    </array>
+
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>8</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <!-- Plumbing errors (before claude even starts) land here. -->
+    <key>StandardOutPath</key>
+    <string>/Users/YOU/.local/share/aios-logs/launchd-daily-pulse.out</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/YOU/.local/share/aios-logs/launchd-daily-pulse.err</string>
+
+    <key>RunAtLoad</key>
+    <false/>
+
+    <!-- launchd jobs get a minimal environment: set PATH and HOME explicitly. -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/Users/YOU/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>HOME</key>
+        <string>/Users/YOU</string>
+    </dict>
+</dict>
+</plist>

@@ -1,0 +1,27 @@
+#!/bin/bash
+# AIOS Unlock: add (on) or remove (off) the YouTube block in /etc/hosts.
+# Installed root-owned at /usr/local/sbin/aios-youtube-block. unlock-sync.sh
+# calls it through a sudoers NOPASSWD rule limited to the exact args on/off.
+# Fixed PATH so a user-writable dir can't shadow sed/grep while running as root.
+export PATH=/usr/bin:/bin:/usr/sbin:/sbin
+MARK='# AIOS-UNLOCK'
+HOSTS=/etc/hosts
+
+case "$1" in
+  on)  want=1 ;;
+  off) want=0 ;;
+  *)   echo "usage: $0 on|off" >&2; exit 2 ;;
+esac
+
+grep -q "$MARK" "$HOSTS" && have=1 || have=0
+[ "$want" = "$have" ] && exit 0
+
+sed -i '' "/$MARK/d" "$HOSTS"
+if [ "$want" = 1 ]; then
+  for d in youtube.com www.youtube.com m.youtube.com music.youtube.com youtu.be youtubei.googleapis.com; do
+    printf '0.0.0.0 %s %s\n:: %s %s\n' "$d" "$MARK" "$d" "$MARK"
+  done >> "$HOSTS"
+fi
+dscacheutil -flushcache
+killall -HUP mDNSResponder 2>/dev/null
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] youtube block $1"

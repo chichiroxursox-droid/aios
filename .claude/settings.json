@@ -1,0 +1,16 @@
+{
+  "$comment": "Project-scoped Claude Code settings for the AIOS. The SessionStart hook injects an instruction (not output): run /get-ready (a global cross-project todo scan, not included here) and then /briefing (project-scoped status). It carries its own escape hatch so it never becomes a toll booth on every session.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '<system-reminder>You are starting a session in the AIOS project (~/aios). Before responding to the user'\\''s first message, run two skills in this exact order and surface their output as a combined morning briefing: (1) /get-ready, a global cross-project task scan. (2) /briefing, the AIOS-specific Q-priority deadlines, latest /audit score, recent decisions, parking-lot due items. After both have run, end with: \"Anything you want to start with from above, or fresh task?\" Then wait for user input. If the user'\\''s first message clearly has nothing to do with the briefing (e.g. they jump straight into a code task), skip the briefing entirely and respect the user'\\''s intent over the cadence ritual.</system-reminder>'"
+          }
+        ]
+      }
+    ]
+  }
+}

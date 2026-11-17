@@ -1,0 +1,1 @@
+{"name": "scan-control", "scripts": {"postinstall": "node -e 0"}}

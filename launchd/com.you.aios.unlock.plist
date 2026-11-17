@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Every 60s + at login: scripts/unlock-sync.sh. Replace YOU, copy to ~/Library/LaunchAgents/, then:
+    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.you.aios.unlock.plist
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.you.aios.unlock</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/YOU/.local/bin/aios/unlock-sync.sh</string>
+    </array>
+
+    <key>StartInterval</key>
+    <integer>60</integer>
+
+    <key>StandardOutPath</key>
+    <string>/Users/YOU/.local/share/aios-logs/launchd-unlock.out</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/YOU/.local/share/aios-logs/launchd-unlock.err</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/Users/YOU/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>HOME</key>
+        <string>/Users/YOU</string>
+    </dict>
+</dict>
+</plist>
